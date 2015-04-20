@@ -74,17 +74,16 @@ Block \block%Q
 %\newenvironment{subanswers}{\begin{enumerate}[label=\textbf{\alph*)}]}{\end{enumerate}}
 \newenvironment{answer*}[2][]{\noindent\textbf{\stringanswer{} [#2]}\hfill $\underline{\quad}\,$/#1 \stringpoints\\}{}
 %\newenvironment{aufgabe*}[2][]{\begin{answer*}[#1]{#2}}{\end{answer}}
-\newenvironment{extra}[2][]{\noindent\textbf{\stringextraanswer{} [#2]}\hfill $\underline{\quad}\,$/#1 \stringpoints\\}{}
-\newenvironment{subanswer}{~\\ \indent\hspace{2em}\stepcounter{csubanswer}\textbf{\alph{csubanswer})}\hfill\begin{minipage}[t]{0.9\textwidth}}{\end{minipage}
-
-}
+\newenvironment{supplement}[2][]{\noindent\textbf{\stringsupplementanswer{} [#2]}\hfill $\underline{\quad}\,$/#1 \stringpoints\\}{}
+%\newenvironment{subanswer}{~\\ \indent\hspace{2em}\stepcounter{csubanswer}\textbf{\alph{csubanswer})}\hfill\begin{minipage}[t]{0.9\textwidth}}{\end{minipage}
+\newenvironment{subanswer}{~\\ \indent\hspace{2em}\stepcounter{csubanswer}\begin{list}{\textbf{\alph{csubanswer})}}{}\item}{\end{list}}
 
 \newcommand\stringsheet{Sheet}
 \newcommand\stringpage{Page}
 \newcommand\stringquizanswer{Quiz questions}
 \newcommand\stringanswer{Answer}
 \newcommand\stringpoints{Points}
-\newcommand\stringextraanswer{Extra answer}
+\newcommand\stringsupplementanswer{Supplement answer}
 \newcommand\thegroup{}
 \newcommand\thecourse{}
 \newcommand\thesemester{}
@@ -99,7 +98,7 @@ Block \block%Q
 \newcommand\setstringquizanswer[1]{\renewcommand\stringquizanswer{#1}}
 \newcommand\setstringanswer[1]{\renewcommand\stringanswer{#1}}
 \newcommand\setstringpoints[1]{\renewcommand\stringpoints{#1}}
-\newcommand\setstringextraanswer[1]{\renewcommand\stringextraanswer{#1}}
+\newcommand\setstringsupplementanswer[1]{\renewcommand\stringsupplementanswer{#1}}
 
 \AtBeginDocument{
   \@ifpackagewith{babel}{ngerman}{%
