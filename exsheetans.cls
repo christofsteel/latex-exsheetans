@@ -8,6 +8,7 @@
 }
 \ProcessOptions\relax
 
+\RequirePackage{totcount}
 \RequirePackage[headsepline, footsepline]{scrlayer-scrpage}
 \raggedbottom
 \RequirePackage{geometry}
@@ -26,8 +27,8 @@
 \ifnum\value{totalscore}>0%
     \textsc{\stringtotal{}} $\underline{\qquad}\,$\textbf{/\arabic{totalscore} \stringpoints}%
 \else
-    \ifnum\value{totalscorecalc}>0%
-    \textsc{\stringtotal{}} $\underline{\qquad}\,$\textbf{/\arabic{totalscorecalc} \stringpoints}%
+    \ifnum\totvalue{totalscorecalc}>0%
+    \textsc{\stringtotal{}} $\underline{\qquad}\,$\textbf{/\total{totalscorecalc} \stringpoints}%
     \fi
 \fi
 }
@@ -37,9 +38,10 @@
 
 
 % Counter der den Namen des Blatt festlegt
+
 \newcounter{sheet}
 \newcounter{totalscore}
-\newcounter{totalscorecalc}
+\newtotcounter{totalscorecalc}
 \newcounter{canswer}[sheet]
 \newcounter{csubanswer}[canswer]
 
