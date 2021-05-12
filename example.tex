@@ -1,38 +1,108 @@
 %\documentclass[ngerman]{exsheetans} % If you want to have a german translation
-\documentclass{exsheetans}
+\documentclass{exsheetans}  % If you want the english version
+
+% These are some packages I (almost) always use
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[ngerman]{babel}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+% These are some packages I regularly use for different kinds of courses. Feel free to change them
+\usepackage{minted}      % print code, REQUIRES PYGMENTS AND --shell-escape
+\usepackage[linesnumbered,vlined,ruled]{algorithm2e}
+\usepackage{proof}
 
 \group{4A} % Set your Group
-\semester{2015}    % Set the current semester
+\semester{Summer 2021}    % Set the current semester
 \course{Mathmatics 1} % Set the course of the exercise
-\author{Author Name} % Your name
-\totalscore{20}
+\author{[123456]~Author~Name, [123457]~Author2~Name} % Your name
+%\totalscore{20} % The total amount of points. If this is not set (or set to 0), the total score will be automatically calculated. If no answer has points associated, then no total score entry is printed.
 \sheet{1} % Set the number of the exercise shet
 
-% Overwrite strings
+% Overwrite strings, if you want your own strings
 % \setstringsheet{Sheet}
 % \setstringpage{Page}
-% \setstringquizanswer{Quiz questions}
+% \setstringquizanswer{Quiz answers}
 % \setstringanswer{Answer}
 % \setstringpoints{Points}
-% \setstringextraanswer{Extra answer}
+% \setstringsupplementanswer{Supplement answer}
 
 \begin{document}
-% Quiz environents. Quiz questions do not have any points
+% Quiz environents. Quiz questions do not have any points. They are enumerated.
 \begin{quiz}
-	\item %
+	\item $\forall A.A\lor\neg A$ is a tautology
+    \item $\forall A.A\land\neg A$ is not a tautology
 \end{quiz}
 % An answer environment has points and a name
-\begin{answer}[8]{Example}
+\begin{answer}[3]{Coding Example}
+    \begin{minted}{python}
+def main():
+    print("Hello world")
+
+if __name__ == "__main__":
+    main()
+    \end{minted}
+\end{answer}
+\begin{answer}{}
+    An answer does not need to have points or even a title.
 \end{answer}
 
-\begin{answer}[7]{Alternierendes Rechnen}
-	% Answer envoronments can have subanswer environments, shown as a), b), c)..
-	\begin{subanswer}
-	\end{subanswer}
-	\begin{subanswer}
-	\end{subanswer}
+\begin{subanswers}[7]{Example with subanswers}
+    \item~\\
+        \begin{center}
+            \begin{tikzpicture}[minimum size=1cm, node distance=2cm]
+            \node (s) {start};
+            \node[draw,circle,node distance=1.5cm] (a) [right of=s] {a};
+            \node[draw,circle] (b) [right of=a] {b};
+            \node[draw,circle, double] (c) [right of=b] {c};
+            \path[draw,->] (s) to (a);
+            \path[draw,->] (a) to node [below] {$x$} (b);
+            \path[draw,->] (b) to node [below] {$y$} (c);
+            \path[draw,->,bend right] (c) to node [above] {$z$} (a);
+        \end{tikzpicture}
+    \end{center}
+    \item~\\
+        \begin{minipage}{\linewidth}%
+            \begin{algorithm}[H]
+                \KwData{Natural number $n$}
+                \KwResult{Double the number $n$}
+                $m \leftarrow n$\;
+                \While{$m > 0$}{
+                    $m\leftarrow m-1$\;
+                    $n\leftarrow n+1$\;                
+                }
+                \Return $n$\;
+                \caption{\textsc{Double}}
+            \end{algorithm}
+        \end{minipage}
+    \item[\textbf{Special)}] The label in the subanswer can be overwritten.
+    \item And counting skips that subanswer
+\end{subanswers}
+\begin{answer}[4]{Math example}
+    \begin{align*}
+         \textsc{Double}(n) &= \textsc{add}(n,n)\\
+                            &= \textsc{add}(n + 1, n-1)\\
+                            &= \ldots\\
+                            &= \textsc{add}(n + n, 0)\\
+                            &= n + n\\
+                            &= 2\cdot n
+    \end{align*}
 \end{answer}
 % If You have some kind of extra assingments, you can answer them inside an extra environment
 \begin{supplement}[10]{Extra}
+    \[\infer{\vdash \lambda x.(\lambda y\,z.y)\,x:\alpha\to\beta\to\alpha}{
+            \infer{x:\alpha\vdash(\lambda y\,z.y)\,x:\beta\to\alpha}{
+                  \infer{x:\alpha\vdash\lambda y\,z.y:\alpha\beta\to\alpha}{
+                      \infer{x:\alpha,y:\alpha\vdash\lambda z.y:\beta\to\alpha}{
+                          \infer{x:\alpha,y:\alpha,z:\beta\vdash y:\alpha}{}
+                      }
+                  }
+                & \infer{x:\alpha\vdash x:\alpha}{}
+            }
+    }\]
 \end{supplement}
 \end{document}

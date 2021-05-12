@@ -3,63 +3,35 @@
 \LoadClass[11pt,oneside,a4paper]{scrartcl}
 
 \newif\ifexsheetans@ngerman
-
 \DeclareOption{ngerman}{
 	\exsheetans@ngermantrue
 }
-
 \ProcessOptions\relax
 
-\ifexsheetans@ngerman
-	\RequirePackage[ngerman]{babel}
-\fi
-% font encoding
-\RequirePackage[T1]{fontenc}
-\RequirePackage{titling}
-\RequirePackage[utf8]{inputenc}
-\RequirePackage[headsepline, footsepline]{scrpage2}
+\RequirePackage[headsepline, footsepline]{scrlayer-scrpage}
 \raggedbottom
 \RequirePackage{geometry}
-\RequirePackage[table]{xcolor}
-\RequirePackage{lmodern}
 \RequirePackage{enumitem}
-\RequirePackage{pgffor}
-\RequirePackage{stmaryrd}
-\RequirePackage{everypage}
-\RequirePackage{nccmath}
-\RequirePackage{tikz}
-\RequirePackage{moreenum}
-\RequirePackage{pifont}
-\newcommand{\cmark}{\ding{51}}
-\newcommand{\xmark}{\ding{55}}
-\usetikzlibrary{positioning}
-
-% AMS packages
-\RequirePackage{amsmath}
-\RequirePackage{amsfonts}
-\RequirePackage{amssymb}
-\RequirePackage{scrextend}
-\RequirePackage[bold]{complexity}
 
 % page formatting
-\geometry{a4paper, top=30mm, left=20mm, right=10mm, bottom=30mm, headsep=10mm, footskip=10mm}
+\geometry{a4paper, top=30mm, left=20mm, right=10mm, bottom=30mm, headsep=10mm, footskip=10mm, head=30pt}
 \KOMAoption{parskip}{half-}
 \pagestyle{scrheadings}
 
-% language selection
-
-\newcommand\blocktext{%
-\ifdefined\block%
-Block \block%Q
-\else\fi}
-
 % page header and footer
-\clearscrheadfoot
+\clearpairofpagestyles
 \ihead{\textsc{\stringsheet{} \arabic{sheet}}\\\textsc{\thegroup}}
-\chead{\textsc{\thecourse\\\theauthor}}
-\ohead{\textsc{\stringpage{} \pagemark}\\\textsc{\stringtotal{}:} $\underline{\qquad}\,$\textbf{/\arabic{totalscore} \stringpoints}}
-\ifoot{\textsc{\blocktext}}
-\cfoot{\textsc{\thesemester}}
+\chead{\textsc{\thecourse\\\thesemester}}
+\ohead{\textsc{\stringpage{} \pagemark}\\%
+\ifnum\value{totalscore}>0%
+    \textsc{\stringtotal{}} $\underline{\qquad}\,$\textbf{/\arabic{totalscore} \stringpoints}%
+\else
+    \ifnum\value{totalscorecalc}>0%
+    \textsc{\stringtotal{}} $\underline{\qquad}\,$\textbf{/\arabic{totalscorecalc} \stringpoints}%
+    \fi
+\fi
+}
+\cfoot{\textsc{\@author}}
 \ofoot{\textsc{}}
 \KOMAoption{cleardoublepage}{scrheadings}
 
@@ -67,24 +39,33 @@ Block \block%Q
 % Counter der den Namen des Blatt festlegt
 \newcounter{sheet}
 \newcounter{totalscore}
+\newcounter{totalscorecalc}
 \newcounter{canswer}[sheet]
 \newcounter{csubanswer}[canswer]
 
 \newenvironment{quiz}[1][]{\begin{addmargin}[0.5cm]{0.5cm}\noindent\textbf{\stringquizanswer{} #1}\begin{enumerate}[label=\textbf{\arabic*.}]}{\end{enumerate}\vspace{5mm}\end{addmargin}}
+
 \newenvironment{answer}[2][]{\stepcounter{canswer}\begin{addmargin}[0.5cm]{0.5cm}\noindent\textbf{\stringanswer{} \arabic{sheet}.\arabic{canswer} \ifx&#2&%
-	\else{[#2]}\fi}\hfill $\underline{\quad}\,$\textbf{/#1 \stringpoints}\\}{\end{addmargin}\vspace{5mm}
+	\else{[#2]}\fi}\ifx&#1&%
+    \else{\addtocounter{totalscorecalc}{#1}\hfill $\underline{\quad}\,$\textbf{/#1 \stringpoints}}\fi\\}{\end{addmargin}\vspace{5mm}
 
 }
-\newenvironment{answer*}[2][]{\begin{addmargin}[0.5cm]{0.5cm}\noindent\textbf{\stringanswer{} [#2]}\hfill $\underline{\quad}\,$\textbf{/#1 \stringpoints}\\}{\end{addmargin}}
-\newenvironment{supplement}[2][]{\begin{addmargin}[0.5cm]{0.5cm}\noindent\textbf{\stringsupplementanswer{} [#2]}\hfill $\underline{\quad}\,$\textbf{/#1 \stringpoints}\\}{\end{addmargin}}
-\newenvironment{subanswer}{~\\ \indent\hspace{2em}\stepcounter{csubanswer}\begin{list}{\textbf{\alph{csubanswer})}}{}\item}{\end{list}}
+\newenvironment{supplement}[2][]{\begin{addmargin}[0.5cm]{0.5cm}\noindent\textbf{\stringsupplementanswer{} [#2]}%
+\ifx&#1&%
+\else{\addtocounter{totalscorecalc}{#1}\hfill $\underline{\quad}\,$\textbf{/#1 \stringpoints}}\fi\\}{\end{addmargin}}
+
+\newenvironment{subanswers}[2][]{\stepcounter{canswer}\begin{addmargin}[0.5cm]{0.5cm}\noindent\textbf{\stringanswer{} \arabic{sheet}.\arabic{canswer} \ifx&#2&%
+	\else{[#2]}\fi}\ifx&#1&%
+    \else{\addtocounter{totalscorecalc}{#1}\hfill $\underline{\quad}\,$\textbf{/#1 \stringpoints}}\fi
+\begin{enumerate}[label=\textbf{\alph*)}]}{\end{enumerate}\vspace{5mm}\end{addmargin}}
+
 
 \newcommand\stringsheet{Sheet}
 \newcommand\stringpage{Page}
-\newcommand\stringquizanswer{Quiz questions}
+\newcommand\stringquizanswer{Quiz answers}
 \newcommand\stringanswer{Answer}
 \newcommand\stringpoints{Points}
-\newcommand\stringtotal{Total}
+\newcommand\stringtotal{$\sum$}
 \newcommand\stringsupplementanswer{Supplement answer}
 \newcommand\thegroup{}
 \newcommand\thecourse{}
@@ -104,15 +85,6 @@ Block \block%Q
 \newcommand\setstringpoints[1]{\renewcommand\stringpoints{#1}}
 \newcommand\setstringsupplementanswer[1]{\renewcommand\stringsupplementanswer{#1}}
 
-\AtBeginDocument{
-  \@ifpackagewith{babel}{ngerman}{%
-	\usepackage{exsheetans-ngerman}
-  }{}
-}
-
-\AddEverypageHook{
-  \ifnum\value{page}=1\relax
-  \else
-  \ohead{\textsc{\stringpage{} \pagemark}\\}
-  \fi
-}
+\ifexsheetans@ngerman
+\protect\RequirePackage{exsheetans-ngerman}
+\fi
