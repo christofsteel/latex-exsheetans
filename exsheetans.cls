@@ -13,6 +13,7 @@
 \raggedbottom
 \RequirePackage{geometry}
 \RequirePackage{enumitem}
+\RequirePackage{ifthen}
 
 
 % init score
@@ -30,14 +31,13 @@
 \ihead{\textsc{\stringsheet{} \arabic{sheet}}\\\textsc{\thegroup}}
 \chead{\textsc{\thecourse\\\thesemester}}
 \ohead{\textsc{\stringpage{} \pagemark}\\%
-\ifnum\@totalscore=0%
-    \ifnum\@savedscore=0%
-    \else\textsc{\stringtotal{}} $\underline{\qquad}\,$\textbf{/\@savedscore\,\stringpoints}%
-    \fi
-\else
+\ifthenelse{\equal{\@totalscore}{0}}{%
+    \ifthenelse{\equal{\@savedscore}{0}}{}{%
+    \textsc{\stringtotal{}} $\underline{\qquad}\,$\textbf{/\@savedscore\,\stringpoints}}
+}{%
     \textsc{\stringtotal{}} $\underline{\qquad}\,$\textbf{/\@totalscore\,\stringpoints}%
-\fi
-}
+}}
+
 \cfoot{\textsc{\@author}}
 \ofoot{\textsc{}}
 \KOMAoption{cleardoublepage}{scrheadings}
