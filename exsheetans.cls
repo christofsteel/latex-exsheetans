@@ -8,11 +8,17 @@
 }
 \ProcessOptions\relax
 
-\RequirePackage{totcount}
+\RequirePackage{xfp}
 \RequirePackage[headsepline, footsepline]{scrlayer-scrpage}
 \raggedbottom
 \RequirePackage{geometry}
 \RequirePackage{enumitem}
+
+
+% init score
+\edef\@totalscore{0}
+\edef\@calcscore{0}
+\edef\@savedscore{0}
 
 % page formatting
 \geometry{a4paper, top=30mm, left=20mm, right=10mm, bottom=30mm, headsep=10mm, footskip=10mm, head=30pt}
@@ -24,12 +30,12 @@
 \ihead{\textsc{\stringsheet{} \arabic{sheet}}\\\textsc{\thegroup}}
 \chead{\textsc{\thecourse\\\thesemester}}
 \ohead{\textsc{\stringpage{} \pagemark}\\%
-\ifnum\value{totalscore}>0%
-    \textsc{\stringtotal{}} $\underline{\qquad}\,$\textbf{/\arabic{totalscore} \stringpoints}%
-\else
-    \ifnum\totvalue{totalscorecalc}>0%
-    \textsc{\stringtotal{}} $\underline{\qquad}\,$\textbf{/\total{totalscorecalc} \stringpoints}%
+\ifnum\@totalscore=0%
+    \ifnum\@savedscore=0%
+    \else\textsc{\stringtotal{}} $\underline{\qquad}\,$\textbf{/\@savedscore\,\stringpoints}%
     \fi
+\else
+    \textsc{\stringtotal{}} $\underline{\qquad}\,$\textbf{/\@totalscore\,\stringpoints}%
 \fi
 }
 \cfoot{\textsc{\@author}}
@@ -40,8 +46,8 @@
 % Counter der den Namen des Blatt festlegt
 
 \newcounter{sheet}
-\newcounter{totalscore}
-\newtotcounter{totalscorecalc}
+%\newcounter{totalscore}
+%\newtotcounter{totalscorecalc}
 \newcounter{canswer}[sheet]
 \newcounter{csubanswer}[canswer]
 
@@ -49,16 +55,16 @@
 
 \newenvironment{answer}[2][]{\stepcounter{canswer}\begin{addmargin}[0.5cm]{0.5cm}\noindent\textbf{\stringanswer{} \arabic{sheet}.\arabic{canswer} \ifx&#2&%
 	\else{[#2]}\fi}\ifx&#1&%
-    \else{\addtocounter{totalscorecalc}{#1}\hfill $\underline{\quad}\,$\textbf{/#1 \stringpoints}}\fi\\}{\end{addmargin}\vspace{5mm}
+    \else{\global\edef\@calcscore{\fpeval{\@calcscore+#1}}\protected@write\@auxout{}{\gdef\protect\@savedscore{\@calcscore}}\hfill $\underline{\quad}\,$\textbf{/#1 \stringpoints}}\fi\\}{\end{addmargin}\vspace{5mm}
 
 }
 \newenvironment{supplement}[2][]{\begin{addmargin}[0.5cm]{0.5cm}\noindent\textbf{\stringsupplementanswer{} [#2]}%
 \ifx&#1&%
-\else{\addtocounter{totalscorecalc}{#1}\hfill $\underline{\quad}\,$\textbf{/#1 \stringpoints}}\fi\\}{\end{addmargin}}
+\else{\global\edef\@calcscore{\fpeval{\@calcscore+#1}}\protected@write\@auxout{}{\gdef\protect\@savedscore{\@calcscore}}\hfill $\underline{\quad}\,$\textbf{/#1 \stringpoints}}\fi\\}{\end{addmargin}}
 
 \newenvironment{subanswers}[2][]{\stepcounter{canswer}\begin{addmargin}[0.5cm]{0.5cm}\noindent\textbf{\stringanswer{} \arabic{sheet}.\arabic{canswer} \ifx&#2&%
 	\else{[#2]}\fi}\ifx&#1&%
-    \else{\addtocounter{totalscorecalc}{#1}\hfill $\underline{\quad}\,$\textbf{/#1 \stringpoints}}\fi
+    \else{\global\edef\@calcscore{\fpeval{\@calcscore+#1}}\protected@write\@auxout{}{\gdef\protect\@savedscore{\@calcscore}}\hfill $\underline{\quad}\,$\textbf{/#1 \stringpoints}}\fi
 \begin{enumerate}[label=\textbf{\alph*)}]}{\end{enumerate}\vspace{5mm}\end{addmargin}}
 
 
@@ -77,7 +83,7 @@
 \newcommand\course[1]{\renewcommand\thecourse{#1}}
 \newcommand\semester[1]{\renewcommand\thesemester{#1}}
 \newcommand\sheet[1]{\setcounter{sheet}{#1}}
-\newcommand\totalscore[1]{\setcounter{totalscore}{#1}}
+\newcommand\totalscore[1]{\edef\@totalscore{#1}}
 
 \newcommand\setstringsheet[1]{\renewcommand\stringsheet{#1}}
 \newcommand\setstringtotal[1]{\renewcommand\stringtotal{#1}}
